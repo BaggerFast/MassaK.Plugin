@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Nugets", "Nugets", "{0563632B-FD66-4353-B857-1A189F12D8FE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MassaK.Plugin", "Nugets\MassaK.Plugin\MassaK.Plugin.csproj", "{3FA0610D-B588-4073-AF70-FB3F589221B6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{75CAA840-0B27-4D28-9D79-6BF105815C46}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{87FCBB24-40A8-47F0-A8EF-9FB3BECB13BC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MassaUI", "Clients\MassaUI\MassaUI.csproj", "{5E5688FC-F439-4FD1-AE0D-8F25A6C1CB74}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3FA0610D-B588-4073-AF70-FB3F589221B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FA0610D-B588-4073-AF70-FB3F589221B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FA0610D-B588-4073-AF70-FB3F589221B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FA0610D-B588-4073-AF70-FB3F589221B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E5688FC-F439-4FD1-AE0D-8F25A6C1CB74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E5688FC-F439-4FD1-AE0D-8F25A6C1CB74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E5688FC-F439-4FD1-AE0D-8F25A6C1CB74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E5688FC-F439-4FD1-AE0D-8F25A6C1CB74}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3FA0610D-B588-4073-AF70-FB3F589221B6} = {0563632B-FD66-4353-B857-1A189F12D8FE}
+		{5E5688FC-F439-4FD1-AE0D-8F25A6C1CB74} = {75CAA840-0B27-4D28-9D79-6BF105815C46}
+	EndGlobalSection
+EndGlobal
