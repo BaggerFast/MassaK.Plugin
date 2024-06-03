@@ -1,22 +1,20 @@
 using System.IO.Ports;
 using MassaK.Plugin.Abstractions.Enums;
-using MassaK.Plugin.Common;
+using MassaK.Plugin.Impl.Common;
 using MassaK.Plugin.Impl.Enums;
+using MassaK.Plugin.Impl.Exceptions;
 using MassaK.Plugin.Impl.Misc;
 
 namespace MassaK.Plugin.Impl;
 
 public partial class MassaK
 {
+    private Timer? WeightTimer { get; set; }
     private SerialPort Port { get; set; }
     private MassaKStatus Status { get; set; } = MassaKStatus.IsDisabled;
 
     private readonly DeviceEventWatcher _attachWatcher = new(DeviceEventType.Connect);
     private readonly DeviceEventWatcher _detachWatcher = new(DeviceEventType.Disconnect);
-    
-    
-    private readonly object _pollingLock = new();
-    private CancellationTokenSource _cancelPollingToken = new();
     
     private static SerialPort GenerateSerialPort(string comPort)
     {
@@ -39,31 +37,22 @@ public partial class MassaK
         StatusChanged?.Invoke(this, Status);
     }
 
-    private void ExecuteCommand(ScaleCommandBase command)
+    private T ExecuteCommand<T>(ScaleCommandBase<T> command, T defaultValue)
     {
         try
         {
-            switch (Status)
-            {
-                case MassaKStatus.IsReady:
-                    command.Activate();
-                    return;
-                case MassaKStatus.IsDisabled:
-                    Connect();
-                    break;
-                default:
-                    Connect();
-                    break;
-            }
+            if (Status == MassaKStatus.IsReady)
+                return command.Request();
         }
-        catch (TimeoutException)
-        {
-            
-        }
-        catch (Exception)
+        catch (MassaKConnectionException)
         {
             Connect();
         }
+        catch (Exception)
+        {
+            // ignored
+        }
+        return defaultValue;
     }
 
     #region Monitoring com port

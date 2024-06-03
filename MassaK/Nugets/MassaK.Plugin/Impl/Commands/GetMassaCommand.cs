@@ -1,17 +1,19 @@
 using System.IO.Ports;
-using MassaK.Plugin.Common;
-using MassaK.Plugin.Utils;
+using MassaK.Plugin.Abstractions.Events;
+using MassaK.Plugin.Impl.Common;
+using MassaK.Plugin.Impl.Exceptions;
+using MassaK.Plugin.Impl.Utils;
 
 namespace MassaK.Plugin.Impl.Commands;
 
-internal class GetMassaCommand(SerialPort port) : ScaleCommandBase(port, MassaKCommands.CmdGetWeight.Value)
+internal class GetMassaCommand(SerialPort port): ScaleCommandBase<WeightEventArg>(port, MassaKCommands.CmdGetWeight.Value)
 {
-    protected override void Response()
+    protected override WeightEventArg Response()
     {
         byte[] buffer = new byte[20];
-        Port.Read(buffer, 0, buffer.Length);
-
-        if (buffer[5] != 0x24) return;
+        int bytesRead = Port.Read(buffer, 0, buffer.Length);
+        
+        if (buffer[5] != 0x24 || bytesRead < buffer.Length) throw new MassaKResponseException();
 
         int packetLen = BitConverter.ToUInt16(buffer.Skip(3).Take(2).ToArray(), 0);
         byte[] packet = buffer.Skip(5).Take(packetLen).ToArray();
@@ -19,10 +21,11 @@ internal class GetMassaCommand(SerialPort port) : ScaleCommandBase(port, MassaKC
         ushort getCrc = BitConverter.ToUInt16(buffer.Skip(18).Take(2).ToArray(), 0);
         ushort generatedCrc = CrcUtil.CalculateCrc16(packet);
 
-        if (getCrc != generatedCrc) return;
+        if (getCrc != generatedCrc) throw new MassaKResponseException();
 
         int weight = BitConverter.ToInt32(buffer.Skip(6).Take(4).ToArray(), 0);
         bool isStable = buffer[11] == 0x01;
-        // WeakReferenceMessenger.Default.Send(new WeightEventArg(weight, isStable));
+        
+        return new(weight, isStable);
     }
 }

@@ -1,6 +1,6 @@
 using MassaK.Plugin.Abstractions.Enums;
 using MassaK.Plugin.Abstractions.Events;
-using MassaK.Plugin.Abstractions.Exceptions;
+using MassaK.Plugin.Impl.Exceptions;
 
 namespace MassaK.Plugin;
 
@@ -23,7 +23,7 @@ public interface IMassaK : IDisposable
 
     #region Polling Weight
 
-    void StartWeightPolling();
+    void StartWeightPolling(ushort msc = 100);
     void StopWeightPolling();
 
     #endregion

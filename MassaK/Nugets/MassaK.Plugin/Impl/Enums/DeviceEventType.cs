@@ -1,6 +1,6 @@
 ﻿namespace MassaK.Plugin.Impl.Enums;
 
-enum DeviceEventType
+internal enum DeviceEventType
 {
     Connect,
     Disconnect

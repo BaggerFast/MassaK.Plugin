@@ -1,16 +1,18 @@
 using System.IO.Ports;
+using MassaK.Plugin.Impl.Exceptions;
 
-namespace MassaK.Plugin.Common;
+namespace MassaK.Plugin.Impl.Common;
 
-internal abstract class ScaleCommandBase(SerialPort port, byte[] command)
+internal abstract class ScaleCommandBase<T> (SerialPort port, byte[] command)
 {
     protected readonly SerialPort Port = port;
 
-    public void Activate()
+    public T Request()
     {
+        if (!Port.IsOpen) throw new MassaKConnectionException();
         Port.Write(command, 0, command.Length);
-        Response();
+        return Response();
     }
 
-    protected abstract void Response();
+    protected abstract T Response();
 }

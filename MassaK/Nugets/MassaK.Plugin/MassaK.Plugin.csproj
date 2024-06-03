@@ -1,4 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <DocumentationFile>bin\Release\MassaK.Plugin.xml</DocumentationFile>
+    </PropertyGroup>
     <ItemGroup>
       <PackageReference Include="System.IO.Ports" Version="8.0.0" />
       <PackageReference Include="System.Management" Version="8.0.0" />

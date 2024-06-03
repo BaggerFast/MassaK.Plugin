@@ -1,8 +1,8 @@
 ﻿@page "/"
 
-@using System.Net
 @using MassaK.Plugin
 @using MassaK.Plugin.Abstractions.Enums
+@using MassaK.Plugin.Abstractions.Events
 @using MassaK.Plugin.Impl
 
 @implements IDisposable
@@ -17,6 +17,7 @@
 </div>
 <div class="w-full pt-4 flex flex-col items-center justify-center">
   <p class="text-2xl">StatusByEvent = @Status</p>
+  <p class="text-2xl">Weight = @Weight.Weight / @Weight.IsStable</p>
 </div>
 
 
@@ -24,31 +25,38 @@
 @code {
   IMassaK MassaK { get; set; } = new MassaK("COM6");
   MassaKStatus Status { get; set; } = MassaKStatus.IsDisabled;
-
-  protected override void OnAfterRender(bool firstRender)
-  {
-    if (firstRender) MassaK.StatusChanged += Receive;
-    base.OnAfterRender(firstRender); 
-  }
+  WeightEventArg Weight { get; set; } = new (0, false);
 
   private void Connect()
   {
+      Disconnect();
       MassaK.Connect();
+      MassaK.StatusChanged += ReceiveStatus;
+      MassaK.WeightChanged += ReceiveWeight;
+      MassaK.StartWeightPolling(100);
   }
   
   private void Disconnect()
   { 
     MassaK.Disconnect();
+    MassaK.StatusChanged -= ReceiveStatus;
+    MassaK.WeightChanged -= ReceiveWeight;
   }
 
-  private void Receive(object? sender, MassaKStatus status)
+  private void ReceiveStatus(object? sender, MassaKStatus status)
   {
       Status = status;
       InvokeAsync(StateHasChanged);
   }
+  
+  private void ReceiveWeight(object? sender, WeightEventArg e)
+  {
+    Weight = e;
+    InvokeAsync(StateHasChanged);
+  }
 
   public void Dispose()
   {
-    MassaK.Dispose();
+    Disconnect();
   }
 }

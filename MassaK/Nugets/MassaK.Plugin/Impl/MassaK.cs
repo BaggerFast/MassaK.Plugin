@@ -1,6 +1,7 @@
 using MassaK.Plugin.Abstractions.Enums;
 using MassaK.Plugin.Abstractions.Events;
 using MassaK.Plugin.Impl.Commands;
+using MassaK.Plugin.Impl.Enums;
 
 namespace MassaK.Plugin.Impl;
 
@@ -43,39 +44,28 @@ public partial class MassaK : IMassaK
     
     #region Polling Weight
 
-    public void StartWeightPolling()
+    public void StartWeightPolling(ushort msc = 100)
     {
-        lock (_pollingLock)
+        if (msc < 100)
+            throw new ArgumentOutOfRangeException(nameof(msc), "The polling interval must be at least 100 milliseconds.");
+        
+        TimeSpan interval = TimeSpan.FromMilliseconds(msc);
+        WeightTimer = new(Callback, null, TimeSpan.Zero, interval);
+        return;
+
+        void Callback(object? _)
         {
-            if (!_cancelPollingToken.IsCancellationRequested)
-                return;
-
-            _cancelPollingToken = new();
-            CancellationToken cancellationToken = _cancelPollingToken.Token;
-
-
-            Task.Run(async () =>
-            {
-                while (!cancellationToken.IsCancellationRequested)
-                {
-                    ExecuteCommand(new GetMassaCommand(Port));
-                    await Task.Delay(200, cancellationToken);
-                }
-            }, cancellationToken);
+            WeightChanged?.Invoke(this, ExecuteCommand(new GetMassaCommand(Port), new(0, false)));
         }
     }
     
     public void StopWeightPolling()
     {
-        lock (_pollingLock)
-        {
-            if (_cancelPollingToken.IsCancellationRequested)
-                return;
-            _cancelPollingToken.Cancel();
-        }
+        WeightTimer?.Dispose();
+        WeightTimer = null;
     }
     
     #endregion
 
-    public void Calibrate() => ExecuteCommand(new CalibrateCommand(Port));
+    public void Calibrate() => ExecuteCommand(new CalibrateCommand(Port), VoidType.None);
 }

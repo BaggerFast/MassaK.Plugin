@@ -1,4 +1,4 @@
-namespace MassaK.Plugin.Utils;
+namespace MassaK.Plugin.Impl.Utils;
 
 internal static class CrcUtil
 {

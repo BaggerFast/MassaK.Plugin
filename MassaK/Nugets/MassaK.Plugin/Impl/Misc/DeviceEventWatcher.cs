@@ -16,7 +16,7 @@ internal class DeviceEventWatcher : IDisposable
         _watcher = new(new WqlEventQuery(query));
         _watcher.Start();
         
-        _watcher.EventArrived += (sender, args) =>
+        _watcher.EventArrived += (_, args) =>
         {
             DeviceEventArrived?.Invoke(this, args);
         };

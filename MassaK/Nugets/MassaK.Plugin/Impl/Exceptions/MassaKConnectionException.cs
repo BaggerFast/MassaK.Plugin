@@ -1,3 +1,3 @@
-﻿namespace MassaK.Plugin.Abstractions.Exceptions;
+﻿namespace MassaK.Plugin.Impl.Exceptions;
 
 public class MassaKConnectionException : Exception;
