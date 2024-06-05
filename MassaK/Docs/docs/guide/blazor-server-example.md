@@ -1,0 +1,80 @@
+﻿# Examples
+To see how the library works, you can run the blazor application from the official [repository](https://github.com/VladStandard/MassaK.Plugin/tree/main/MassaK/Clients/MassaUI)
+
+```csharp
+@page "/"
+
+@using MassaK.Plugin
+@using MassaK.Plugin.Impl
+@using MassaK.Plugin.Abstractions.Enums
+@using MassaK.Plugin.Abstractions.Events
+
+
+@implements IDisposable
+
+<div class="w-full pt-4 flex flex-col items-center justify-center">
+  <p class="text-5xl">MassaK WebUI</p>
+</div>
+
+<div class="w-full flex gap-2 pt-2 items-center justify-center">
+  <Button OnClick="@Connect">
+    Connect
+  </Button>
+  <Button OnClick="@Disconnect">
+    Disconnect
+  </Button>
+</div>
+<div class="w-full pt-4 flex flex-col items-center justify-center">
+  <p class="text-2xl">StatusByEvent = @Status</p>
+  <p class="text-2xl">Weight = @Weight.Weight / @Weight.IsStable</p>
+</div>
+
+
+
+@code {
+  IMassaK MassaK { get; set; } = new MassaUsb("COM6");
+  MassaKStatus Status { get; set; } = MassaKStatus.Disabled;
+  WeightEventArg Weight { get; set; } = new (0, false);
+
+  protected override void OnAfterRender(bool firstRender)
+  {
+    if (firstRender)
+    {
+      MassaK.OnStatusChanged += ReceiveStatus;
+      MassaK.OnWeightChanged += ReceiveWeight;
+    }
+    base.OnAfterRender(firstRender);
+  }
+
+  private void Connect()
+  {
+      MassaK.Connect();
+      MassaK.StartWeightPolling();
+  }
+  
+  private void Disconnect()
+  { 
+    MassaK.Disconnect();
+  }
+
+  private void ReceiveStatus(object? sender, MassaKStatus status)
+  {
+      Status = status;
+      InvokeAsync(StateHasChanged);
+  }
+  
+  private void ReceiveWeight(object? sender, WeightEventArg e)
+  {
+    Weight = e;
+    InvokeAsync(StateHasChanged);
+  }
+
+  public void Dispose()
+  {
+    MassaK.OnStatusChanged -= ReceiveStatus;
+    MassaK.OnWeightChanged -= ReceiveWeight;
+    Disconnect();
+    MassaK.Dispose();
+  }
+}
+```
