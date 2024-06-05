@@ -5,7 +5,7 @@ using MassaK.Plugin.Impl.Utils;
 
 namespace MassaK.Plugin.Impl.Commands;
 
-internal class CalibrateCommand(SerialPort port) : ScaleCommandBase<VoidType>(port, MassaKCommands.CmdSetZero.Value)
+internal sealed class CalibrateCommand(SerialPort port) : ScaleCommandBase<VoidType>(port, MassaKCommands.CmdSetZero.Value)
 {
     protected override VoidType Response()
     {

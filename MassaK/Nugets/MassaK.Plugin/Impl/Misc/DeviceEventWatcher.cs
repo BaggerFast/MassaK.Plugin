@@ -3,7 +3,7 @@ using MassaK.Plugin.Impl.Enums;
 
 namespace MassaK.Plugin.Impl.Misc;
 
-internal class DeviceEventWatcher : IDisposable
+internal sealed class DeviceEventWatcher : IDisposable
 {
     private readonly ManagementEventWatcher _watcher;
     public event EventHandler? DeviceEventArrived;

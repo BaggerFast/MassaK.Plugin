@@ -6,7 +6,7 @@ using MassaK.Plugin.Impl.Utils;
 
 namespace MassaK.Plugin.Impl.Commands;
 
-internal class GetMassaCommand(SerialPort port): ScaleCommandBase<WeightEventArg>(port, MassaKCommands.CmdGetWeight.Value)
+internal sealed class GetMassaCommand(SerialPort port): ScaleCommandBase<WeightEventArg>(port, MassaKCommands.CmdGetWeight.Value)
 {
     protected override WeightEventArg Response()
     {

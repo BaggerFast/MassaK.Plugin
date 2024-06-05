@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
     <PropertyGroup>
-        <Version>0.0.2</Version>
+        <Version>1.0.0</Version>
         <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
         <Deterministic>true</Deterministic>
         <WarningLevel>9999</WarningLevel>
@@ -13,11 +13,13 @@
     
     <PropertyGroup>
         <Description>C# nuget package for MassaK usb adapter</Description>
-<!--        <PackageReadmeFile>README.md</PackageReadmeFile>-->
-<!--        <PackageProjectUrl>https://vladstandard.github.io/TscZebra.Plugin/</PackageProjectUrl>-->
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <RepositoryType>GitHub</RepositoryType>
+        <PackageProjectUrl>https://vladstandard.github.io/MassaK.Plugin/</PackageProjectUrl>
         <RepositoryUrl>https://github.com/VladStandard/MassaK.Plugin</RepositoryUrl>
         <RepositoryType>GitHub</RepositoryType>
-        <PackageTags>Scale;Scales;MassaK;MassaK-USB</PackageTags>
+        <PackageTags>Scale;Scales;MassaK;MassaK-USB;МАССА-К;</PackageTags>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

@@ -1,6 +1,5 @@
 using MassaK.Plugin.Abstractions.Enums;
 using MassaK.Plugin.Abstractions.Events;
-using MassaK.Plugin.Impl.Exceptions;
 
 namespace MassaK.Plugin;
 
@@ -9,9 +8,8 @@ public interface IMassaK : IDisposable
     #region Connect
 
     /// <summary>
-    /// Establishes a serial port connection to the MassaK.
+    /// Establishes a serial port connection to the MassaK. Use <see cref="OnStatusChanged"/>
     /// </summary>
-    /// <exception cref="MassaKConnectionException">Thrown when the connection to the printer is lost.</exception>
     void Connect();
     
     /// <summary>
@@ -23,13 +21,25 @@ public interface IMassaK : IDisposable
 
     #region Polling Weight
 
+    /// <summary>
+    /// Starts polling the weight from the MassaK device at a specified interval. Use <see cref="OnWeightChanged"/>
+    /// </summary>
+    /// <param name="msc">The interval in milliseconds between weight requests. The minimum value is 100 milliseconds (use cautiously).</param>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when the interval is less than 100 milliseconds.</exception>
     void StartWeightPolling(ushort msc = 100);
+    
+    /// <summary>
+    /// Stops polling the weight from the MassaK device.
+    /// </summary>
     void StopWeightPolling();
 
     #endregion
 
     #region Commands
 
+    /// <summary>
+    /// Calibrate MassaK device.
+    /// </summary>
     void Calibrate();
 
     #endregion

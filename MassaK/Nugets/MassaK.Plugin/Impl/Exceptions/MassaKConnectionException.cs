@@ -1,3 +1,3 @@
 ﻿namespace MassaK.Plugin.Impl.Exceptions;
 
-public class MassaKConnectionException : Exception;
+internal class MassaKConnectionException : Exception;

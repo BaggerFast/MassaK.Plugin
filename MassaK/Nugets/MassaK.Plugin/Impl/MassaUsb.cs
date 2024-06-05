@@ -7,12 +7,8 @@ namespace MassaK.Plugin.Impl;
 
 public partial class MassaUsb : IMassaK
 {
-    #region Events
-
     public event EventHandler<WeightEventArg>? OnWeightChanged;
     public event EventHandler<MassaKStatus>? OnStatusChanged;
-
-    #endregion
 
     public MassaUsb(string comPort)
     {
