@@ -1,8 +1,8 @@
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
-  base: '/TscZebra.Plugin/',
-  title: "TSC / Zebra plugin",
+  base: '/MassaK.Plugin/',
+  title: "MassaK plugin",
   description: "A documentation for nuget package",
   themeConfig: {
     nav: [
@@ -11,16 +11,11 @@ export default defineConfig({
     ],
     sidebar: [
       {
-        text: 'About',
-        items: [
-          { text: 'About', link: '/guide/about.md' },
-        ]
-      },
-      {
         text: 'Documentation',
         items: [
           { text: 'Installation', link: '/guide/index.md' },
-          { text: 'How to use', link: '/guide/usage.md' }
+          { text: 'How to use', link: '/guide/usage.md' },
+          { text: 'Events', link: '/guide/events.md' }
         ]
       },
       {
@@ -31,7 +26,7 @@ export default defineConfig({
       }
     ],
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/VladStandard/TscZebra.Plugin' }
+      { icon: 'github', link: 'https://github.com/VladStandard/MassaK.Plugin' }
     ]
   }
 })

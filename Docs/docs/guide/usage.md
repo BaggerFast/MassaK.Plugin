@@ -1,95 +1,45 @@
 ﻿#  Usage
 
-## Setup printer
-This code creates IZplPrinter Instance without connecting
+## Setup MassaK
+This code creates MassaK Instance without connecting. 
+It is recommended to subscribe to [OnStatusChanged](events.md#statuschanged) and [OnWeightChanged](events.md#onweightchanged) before using method `Connect()`
 
-```csharp{5}
-using TscZebra.Plugin;
-using TscZebra.Plugin.Abstractions;
+```csharp{4}
+using MassaK.Plugin
+using MassaK.Plugin.Imp;
 
-IZplPrinter Printer = 
-    PrinterFactory.Create(IPAddress.Parse("127.0.0.1"), 9100, PrinterTypes.Tsc);
+IMassaK MassaK = new MassaUsb("COM6");
+MassaK.OnStatusChanged += ReceiveStatus;
+MassaK.OnWeightChanged += ReceiveWeight;
 ```
 
 ## Connect
-
-```csharp{3}
-try
-{
-  await Printer.ConnectAsync();
-} catch (PrinterConnectionException)
-{
-  // connection cannot be established
-} 
-```
-
-## Get status
-
-### By polling
-This method request printer for status, every interval seconds.
-Invokes event **StatusChanged**.
-
-Method auto disabled when printer disabled (always when IZplPrinter throws PrinterConnectionException).
-Use after ConnectAsync method
-
-```csharp{1}
-  Printer.StartStatusPolling(5);
-  
-  Printer.StatusChanged += Receive;
-
-  private void Receive(object? sender, PrinterStatus status)
-  {
-    // Your logic here
-  }
-  
-  Printer.StopStatusPolling();
-  Printer.PrinterStatusChanged -= Receive;
-```
-
-### By hand
-
-This method also invokes event **PrinterStatusChanged**
-
+This method is safely for use, no exceptions only event `StatusChanged`. 
 ```csharp
-  PrinterStatuses StatusByHand = await Printer.RequestStatusAsync();
+MassaK.Connect();
 ```
 
-## Print zpl
-Before printing, the printer requests its status and triggers all status events.
+## Get weight
+This method requests weight data from the scales. The argument specifies the interval in milliseconds between requests.
+A smaller value means faster polling, with a minimum of 100 milliseconds (use cautiously).
+Use [OnWeightChanged](events.md#onweightchanged) event
 ```csharp
-  try {
-    Printer.PrintZplAsync(string zpl);
-  } catch {
-      
-  }
+MassaK.StartWeightPolling(100);
 ```
 
-This method validates the ZPL code for printing. If the ZPL code is not valid, it throws a **PrinterCommandBodyException**
+## Calibrate
+Ensure there is no weight placed on the scales before connecting them via USB.
+If any issues arise, reconnect the scales via USB.
 ```csharp
-   public async Task PrintZplAsync(string zpl)
-    {
-        if (!zpl.StartsWith("^XA") || !zpl.EndsWith("^XZ"))
-            throw new PrinterCommandBodyException();
-    }
-```
-
-If the printer is successfully connected but cannot print a label (e.g., the head is open), it throws a **PrinterStatusException**
-```csharp
-    public async Task PrintZplAsync(string zpl)
-    {
-        if (Status is not (PrinterStatuses.Ready or PrinterStatuses.Busy))
-            throw new PrinterStatusException();
-    }
+MassaK.Сalibrate();
 ```
 
 ## Disconnect
 ```csharp
-Printer.Disconnect();
+MassaK.Disconnect();
 ```
-or 
+After calling Disconnect, you can reconnect the object again that's why you need to call `Dispose()` for full destroy.
+Or call only `Dispose()` without `Disconnect()`
 ```csharp
-Printer.Dispose();
+MassaK.Dispose();
 ```
-
-## Other Commands
-You can find comprehensive documentation for IZplPrinter in the [code](https://github.com/VladStandard/TscZebra.Plugin/blob/main/Nugets/TscZebra.Plugin.Abstractions/IZplPrinter.cs).
