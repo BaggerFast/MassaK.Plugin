@@ -1,8 +1,10 @@
 namespace MassaK.Plugin.Impl.Utils;
 
-internal static class CrcUtil
+internal static class CrcUtils
 {
     private static readonly byte[] HeaderBytes = [0xF8, 0x55, 0xCE];
+    
+    #region Public
 
     public static ushort CalculateCrc16(byte[] data)
     {
@@ -30,6 +32,12 @@ internal static class CrcUtil
         return BitConverter.ToUInt16(crcReverse, 0);
     }
 
+    public static byte[] Generate(byte body) => Generate([body]);
+    
+    #endregion
+    
+    #region Private
+
     private static byte[] MergeBytes(List<byte[]> bytesList)
     {
         int len = bytesList.Sum(bytes => bytes.Length);
@@ -48,5 +56,5 @@ internal static class CrcUtil
         return MergeBytes([HeaderBytes, len, body, crc]);
     }
 
-    public static byte[] Generate(byte body) => Generate([body]);
+    #endregion
 }

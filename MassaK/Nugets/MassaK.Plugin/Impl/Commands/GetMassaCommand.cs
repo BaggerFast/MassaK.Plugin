@@ -19,7 +19,7 @@ internal class GetMassaCommand(SerialPort port): ScaleCommandBase<WeightEventArg
         byte[] packet = buffer.Skip(5).Take(packetLen).ToArray();
 
         ushort getCrc = BitConverter.ToUInt16(buffer.Skip(18).Take(2).ToArray(), 0);
-        ushort generatedCrc = CrcUtil.CalculateCrc16(packet);
+        ushort generatedCrc = CrcUtils.CalculateCrc16(packet);
 
         if (getCrc != generatedCrc) throw new MassaKResponseException();
 

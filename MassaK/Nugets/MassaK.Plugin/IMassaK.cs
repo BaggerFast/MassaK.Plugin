@@ -39,12 +39,12 @@ public interface IMassaK : IDisposable
     /// <summary>
     /// Subscribe to this event to receive notifications about weight changes from the MassaK adapter.
     /// </summary>
-    public event EventHandler<WeightEventArg> WeightChanged;
+    public event EventHandler<WeightEventArg> OnWeightChanged;
     
     /// <summary>
     /// Subscribe to this event to receive notifications about the connection status of the MassaK adapter.
     /// </summary>
-    public event EventHandler<MassaKStatus> StatusChanged;
+    public event EventHandler<MassaKStatus> OnStatusChanged;
     
     #endregion
 }

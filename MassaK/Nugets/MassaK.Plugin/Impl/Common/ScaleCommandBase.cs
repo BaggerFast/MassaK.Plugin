@@ -9,8 +9,15 @@ internal abstract class ScaleCommandBase<T> (SerialPort port, byte[] command)
 
     public T Request()
     {
-        if (!Port.IsOpen) throw new MassaKConnectionException();
-        Port.Write(command, 0, command.Length);
+        try
+        {
+            if (!Port.IsOpen) throw new MassaKConnectionException();
+            Port.Write(command, 0, command.Length);
+        }
+        catch
+        {
+            throw new MassaKConnectionException();
+        }
         return Response();
     }
 

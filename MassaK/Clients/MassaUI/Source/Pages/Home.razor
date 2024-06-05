@@ -1,11 +1,16 @@
 ﻿@page "/"
 
 @using MassaK.Plugin
+@using MassaK.Plugin.Impl
 @using MassaK.Plugin.Abstractions.Enums
 @using MassaK.Plugin.Abstractions.Events
-@using MassaK.Plugin.Impl
+
 
 @implements IDisposable
+
+<div class="w-full pt-4 flex flex-col items-center justify-center">
+  <p class="text-5xl">MassaK WebUI</p>
+</div>
 
 <div class="w-full flex gap-2 pt-2 items-center justify-center">
   <Button OnClick="@Connect">
@@ -23,33 +28,38 @@
 
 
 @code {
-  IMassaK MassaK { get; set; } = new MassaK("COM6");
-  MassaKStatus Status { get; set; } = MassaKStatus.IsDisabled;
+  IMassaK MassaK { get; set; } = new MassaUsb("COM6");
+  MassaKStatus Status { get; set; } = MassaKStatus.Disabled;
   WeightEventArg Weight { get; set; } = new (0, false);
+
+  protected override void OnAfterRender(bool firstRender)
+  {
+    if (firstRender)
+    {
+      MassaK.OnStatusChanged += ReceiveOnStatus;
+      MassaK.OnWeightChanged += ReceiveOnWeight;
+    }
+    base.OnAfterRender(firstRender);
+  }
 
   private void Connect()
   {
-      Disconnect();
       MassaK.Connect();
-      MassaK.StatusChanged += ReceiveStatus;
-      MassaK.WeightChanged += ReceiveWeight;
-      MassaK.StartWeightPolling(100);
+      MassaK.StartWeightPolling();
   }
   
   private void Disconnect()
   { 
     MassaK.Disconnect();
-    MassaK.StatusChanged -= ReceiveStatus;
-    MassaK.WeightChanged -= ReceiveWeight;
   }
 
-  private void ReceiveStatus(object? sender, MassaKStatus status)
+  private void ReceiveOnStatus(object? sender, MassaKStatus status)
   {
       Status = status;
       InvokeAsync(StateHasChanged);
   }
   
-  private void ReceiveWeight(object? sender, WeightEventArg e)
+  private void ReceiveOnWeight(object? sender, WeightEventArg e)
   {
     Weight = e;
     InvokeAsync(StateHasChanged);
@@ -57,6 +67,9 @@
 
   public void Dispose()
   {
+    MassaK.OnStatusChanged -= ReceiveOnStatus;
+    MassaK.OnWeightChanged -= ReceiveOnWeight;
     Disconnect();
+    MassaK.Dispose();
   }
 }
