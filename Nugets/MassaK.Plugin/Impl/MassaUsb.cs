@@ -75,8 +75,10 @@ public partial class MassaUsb : IMassaK
 
         void Callback(object? _)
         {
-            WeightEventArg weight = ExecuteCommand(new GetMassaCommand(Port)) ?? new(0, false);
-            OnWeightChanged?.Invoke(this, weight);
+            WeightEventArg newWeight = ExecuteCommand(new GetMassaCommand(Port)) ?? new(0, false);
+            if (newWeight == Weight) return;
+            Weight = newWeight;
+            OnWeightChanged?.Invoke(this, Weight);
         }
     }
     

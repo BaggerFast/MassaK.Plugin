@@ -1,5 +1,6 @@
 using System.IO.Ports;
 using MassaK.Plugin.Abstractions.Enums;
+using MassaK.Plugin.Abstractions.Events;
 using MassaK.Plugin.Impl.Common;
 using MassaK.Plugin.Impl.Enums;
 using MassaK.Plugin.Impl.Exceptions;
@@ -16,6 +17,8 @@ public partial class MassaUsb
     private SerialPort Port { get; set; }
     private MassaKStatus Status { get; set; } = MassaKStatus.Disabled;
 
+    private WeightEventArg Weight { get; set; } = new(0, false);
+
     private readonly DeviceEventWatcher _attachWatcher = new(DeviceEventType.Connect);
     private readonly DeviceEventWatcher _detachWatcher = new(DeviceEventType.Disconnect);
     
@@ -25,19 +28,24 @@ public partial class MassaUsb
 
     private void SetStatus(MassaKStatus status)
     {
+        if (status == Status) return;
+        
         if (status is MassaKStatus.Detached or MassaKStatus.Disabled)
         {
             Port.Dispose();
+            InitTimer?.Dispose();
             SetWeight(0, false);
         }
-        
         Status = status;
         OnStatusChanged?.Invoke(this, status);
     }
 
     private void SetWeight(int weight, bool isStable)
     {
-        OnWeightChanged?.Invoke(this, new(weight, isStable));
+        WeightEventArg newWeight = new(weight, isStable);
+        if (newWeight == Weight) return;
+        Weight = newWeight;
+        OnWeightChanged?.Invoke(this, Weight);
     }
     
     private T? ExecuteCommand<T>(ScaleCommandBase<T> command)
@@ -69,7 +77,7 @@ public partial class MassaUsb
         SetStatus(MassaKStatus.Initializing);
         Connect();
             
-        InitTimer = new(DeviceInit, null, TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(10));
+        InitTimer = new(DeviceInit, null, TimeSpan.FromSeconds(15), TimeSpan.FromSeconds(15));
     }
     
     private void DeviceDetached(object? sender, EventArgs e)
@@ -84,7 +92,6 @@ public partial class MassaUsb
             SetStatus(MassaKStatus.Ready);
         
         InitTimer?.Dispose();
-        InitTimer = null;
     }
     
     #endregion
