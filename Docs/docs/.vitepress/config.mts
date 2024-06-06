@@ -26,7 +26,7 @@ export default defineConfig({
       }
     ],
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/VladStandard/MassaK.Plugin' }
+      { icon: 'github', link: 'https://github.com/BaggerFast/MassaK.Plugin' }
     ]
   }
 })

@@ -1,5 +1,5 @@
 ﻿# Examples
-To see how the library works, you can run the blazor application from the official [repository](https://github.com/VladStandard/MassaK.Plugin/tree/main/MassaK/Clients/MassaUI)
+To see how the library works, you can run the blazor application from the official [repository](https://github.com/BaggerFast/MassaK.Plugin/tree/main/Clients/MassaUI)
 
 ```csharp
 @page "/"
